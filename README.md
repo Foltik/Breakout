@@ -1,2 +1,2 @@
-# Eldorado
-Remake of the classic flash game Motherload with the K5 Engine.
+# Breakout
+Remake of the classic Atari game Breakout with the K5 Engine.
