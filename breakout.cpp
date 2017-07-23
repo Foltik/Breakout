@@ -13,12 +13,25 @@ struct Collision {
     glm::vec2 distance;
 };
 
+bool checkCollision(CObject& a, CObject& b) {
+    bool collidingX = a.getPos().x + a.getSize().x >= b.getPos().x + b.getSize().x;
+    bool collidingY = a.getPos().y + a.getSize().y >= b.getPos().y + b.getSize().y;
+
+    return collidingX && collidingY;
+}
+
+glm::vec2 rotate(const glm::vec2& vec, const float deg) {
+    float cos = glm::cos(glm::radians(deg));
+    float sin = glm::sin(glm::radians(deg));
+    return glm::vec2(vec.x * cos + vec.y * sin, vec.x * sin - vec.y * cos);
+}
+
 Direction vectorDirection(glm::vec2 vec) {
     std::vector<glm::vec2> directions {
         glm::vec2(-1.0f, 0.0f), // Left
         glm::vec2(0.0f, -1.0f), // Down
         glm::vec2(0.0f, 1.0f),  // Up
-        glm::vec2(1.0f, 0.0f)
+        glm::vec2(1.0f, 0.0f)   // Right
     };
 
     auto it = std::max_element(directions.begin(), directions.end(), [vec](glm::vec2 a, glm::vec2 b) {
@@ -26,13 +39,6 @@ Direction vectorDirection(glm::vec2 vec) {
     });
 
     return (Direction)std::distance(directions.begin(), it);
-}
-
-bool checkCollision(CObject& a, CObject& b) {
-    bool collidingX = a.getPos().x + a.getSize().x >= b.getPos().x + b.getSize().x;
-    bool collidingY = a.getPos().y + a.getSize().y >= b.getPos().y + b.getSize().y;
-
-    return collidingX && collidingY;
 }
 
 Collision checkCollision(Ball& a, CObject& b) {
@@ -119,7 +125,7 @@ void Breakout::Loop() {
                     glm::vec2 vel = ball.getVelocity();
                     glm::vec2 pos = ball.getPos();
                     if (c.direction == RIGHT || c.direction == LEFT) {
-                        ball.setVelocity(glm::vec2(vel.x, -vel.y * 1.1f));
+                        ball.setVelocity(glm::vec2(-vel.x, vel.y));
                         float innerDistance = ball.getRadius() - std::abs(c.distance.x);
                         if (c.direction == LEFT)
                             ball.setPos(glm::vec2(pos.x - innerDistance, pos.y));
@@ -127,7 +133,7 @@ void Breakout::Loop() {
                             ball.setPos(glm::vec2(pos.x + innerDistance, pos.y));
                     } else {
                         float innerDistance = ball.getRadius() - std::abs(c.distance.y);
-                        ball.setVelocity(glm::vec2(vel.x, -vel.y * 1.1f));
+                        ball.setVelocity(glm::vec2(vel.x, -vel.y));
                         if (c.direction == UP)
                             ball.setPos(glm::vec2(pos.x, pos.y + innerDistance));
                         else
@@ -143,22 +149,23 @@ void Breakout::Loop() {
         glm::vec2 vel = ball.getVelocity();
         glm::vec2 pos = ball.getPos();
         if (c.direction == RIGHT || c.direction == LEFT) {
-            ball.setVelocity(glm::vec2(vel.x, -vel.y * 1.1f));
+            ball.setVelocity(glm::vec2(-vel.x, vel.y));
             float innerDistance = ball.getRadius() - std::abs(c.distance.x);
             if (c.direction == LEFT)
                 ball.setPos(glm::vec2(pos.x + innerDistance, pos.y));
             else
                 ball.setPos(glm::vec2(pos.x - innerDistance, pos.y));
         } else {
+            float offset = ball.getPos().x + ball.getRadius() - player.getPos().x - player.getSize().x / 2;
+            ball.setVelocity(rotate(vel, offset));
             float innerDistance = ball.getRadius() - std::abs(c.distance.y);
-            ball.setVelocity(glm::vec2(vel.x, -vel.y * 1.1f));
             if (c.direction == UP)
                 ball.setPos(glm::vec2(pos.x, pos.y + innerDistance));
             else
                 ball.setPos(glm::vec2(pos.x, pos.y - innerDistance));
         }
     }
-    }
+}
 
 void Breakout::Render() {
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);

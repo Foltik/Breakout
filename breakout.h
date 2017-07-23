@@ -35,5 +35,5 @@ private:
 
     Level level;
     Paddle player;
-    Ball ball = Ball(glm::vec2(player.getPos().x + player.getSize().x / 2 - 12.5f / 2, 720.0f - player.getSize().y - 25.0f), 12.5f, glm::vec2(3.0f, -3.0f), true);
+    Ball ball = Ball(glm::vec2(player.getPos().x + player.getSize().x / 2 - 12.5f / 2, 720.0f - player.getSize().y - 25.0f), 12.5f, glm::vec2(5.0f, -5.0f), true);
 };
