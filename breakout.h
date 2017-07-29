@@ -32,6 +32,7 @@ private:
     glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f, -1.0f, 1.0f);
 
     SpriteRenderer rnd = SpriteRenderer(proj);
+    ParticleGenerator pgen = ParticleGenerator(proj, Texture("textures/ball.png"), 10);
 
     Level level;
     Paddle player;

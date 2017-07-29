@@ -165,6 +165,9 @@ void Breakout::Loop() {
                 ball.setPos(glm::vec2(pos.x, pos.y - innerDistance));
         }
     }
+
+    pgen.Tick();
+    pgen.setPos(ball.getPos() + glm::vec2(ball.getRadius()));
 }
 
 void Breakout::Render() {
@@ -174,6 +177,7 @@ void Breakout::Render() {
     level.draw(rnd);
     player.draw(rnd);
     ball.draw(rnd);
+    pgen.Draw();
 
     glfwSwapBuffers(CEngine::Instance().wnd);
 }
